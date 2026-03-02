@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gen AI Engineer Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #060810;
+    --surface: #0d1117;
+    --border: #1e2730;
+    --accent1: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --accent5: #f43f5e;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    border: 1px solid var(--accent1);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    animation: pulse-border 2s ease infinite;
+  }
+
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(0,229,255,0); }
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent1) 70%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent1), var(--accent2), var(--accent3), var(--accent4), var(--accent5));
+  }
+
+  .phase {
+    margin-bottom: 44px;
+    animation: fadeLeft 0.6s ease both;
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.1s; }
+  .phase:nth-child(2) { animation-delay: 0.2s; }
+  .phase:nth-child(3) { animation-delay: 0.3s; }
+  .phase:nth-child(4) { animation-delay: 0.4s; }
+  .phase:nth-child(5) { animation-delay: 0.5s; }
+  .phase:nth-child(6) { animation-delay: 0.6s; }
+  .phase:nth-child(7) { animation-delay: 0.7s; }
+
+  .phase-dot {
+    position: absolute;
+    left: -7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    margin-top: 4px;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .phase-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 28px;
+  }
+
+  .phase-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .phase-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  .chevron {
+    color: var(--muted);
+    transition: transform 0.3s ease;
+    font-size: 12px;
+  }
+
+  .phase-header.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .phase-body {
+    display: none;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .phase-body.open {
+    display: block;
+    animation: expandDown 0.3s ease;
+  }
+
+  @keyframes expandDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .topic-tag {
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .resources-label {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .resource-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .resource-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .resource-list li a:hover {
+    border-color: var(--border);
+    background: rgba(255,255,255,0.06);
+    transform: translateX(4px);
+  }
+
+  .yt-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 20px;
+    background: #ff0000;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .resource-meta {
+    flex: 1;
+  }
+
+  .resource-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .resource-channel {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .resource-type {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+  }
+
+  /* Phase colors */
+  .p1 { --color: #00e5ff; }
+  .p2 { --color: #7c3aed; }
+  .p3 { --color: #f59e0b; }
+  .p4 { --color: #10b981; }
+  .p5 { --color: #f43f5e; }
+  .p6 { --color: #a78bfa; }
+  .p7 { --color: #fb923c; }
+
+  .phase .phase-dot { background: var(--color); }
+  .phase .phase-title { color: var(--color); }
+  .phase .phase-body { border-left: 3px solid var(--color); }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .total-bar {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    font-size: 13px;
+    animation: fadeDown 0.8s ease 0.8s both;
+  }
+
+  .total-bar span {
+    color: var(--accent1);
+    font-weight: 700;
+  }
+
+  .tip {
+    text-align:center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    animation: fadeDown 0.6s ease 0.4s both;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="badge">2025 Roadmap</div>
+    <h1>Gen AI Engineer</h1>
+    <p class="subtitle">From Zero → Production-Ready AI Systems</p>
+  </header>
+
+  <p class="tip">▼ Click any phase to expand resources</p>
+
+  <div class="timeline">
+
+    <!-- Phase 1 -->
+    <div class="phase p1">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">01</span>
+        <span class="phase-title">Python & Math Foundations</span>
+        <span class="phase-duration">4–6 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">Python</span>
+          <span class="topic-tag">NumPy</span>
+          <span class="topic-tag">Pandas</span>
+          <span class="topic-tag">Linear Algebra</span>
+          <span class="topic-tag">Calculus</span>
+          <span class="topic-tag">Statistics & Probability</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://youtu.be/ygXn5nV5qFc?si=r3wRZ81mjpgGNwLW" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Python Full Course for Beginners</div><div class="resource-channel">Dave Ebbelaar</div></div>
+            <span class="resource-type">6hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2ZVjGgf0-0Svr8" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Essence of Linear Algebra</div><div class="resource-channel">3Blue1Brown</div></div>
+            <span class="resource-type">Series</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=LqYbH30OAUM" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Statistics for Data Science</div><div class="resource-channel">StatQuest with Josh Starmer</div></div>
+            <span class="resource-type">Course</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=r-uOLxNrNk8" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">NumPy & Pandas Full Course</div><div class="resource-channel">freeCodeCamp</div></div>
+            <span class="resource-type">10hr</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase p2">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">02</span>
+        <span class="phase-title">Machine Learning Core</span>
+        <span class="phase-duration">6–8 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">Supervised Learning</span>
+          <span class="topic-tag">Unsupervised Learning</span>
+          <span class="topic-tag">Model Evaluation</span>
+          <span class="topic-tag">Scikit-learn</span>
+          <span class="topic-tag">Feature Engineering</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/playlist?list=PLkDaE6sCZn6FNC6YRfRQc_FbeQrF8BwGI" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Machine Learning Specialization</div><div class="resource-channel">Andrew Ng / DeepLearning.AI</div></div>
+            <span class="resource-type">Playlist</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=i_LwzRVP7bg" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Machine Learning with Python</div><div class="resource-channel">freeCodeCamp</div></div>
+            <span class="resource-type">7hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/@statquest" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">ML Concepts Explained Visually</div><div class="resource-channel">StatQuest with Josh Starmer</div></div>
+            <span class="resource-type">Channel</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase p3">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">03</span>
+        <span class="phase-title">Deep Learning & Neural Networks</span>
+        <span class="phase-duration">6–8 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">PyTorch</span>
+          <span class="topic-tag">Backpropagation</span>
+          <span class="topic-tag">CNNs</span>
+          <span class="topic-tag">RNNs / LSTMs</span>
+          <span class="topic-tag">Transfer Learning</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/watch?v=V_xro1bcAuA" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">PyTorch Full Course</div><div class="resource-channel">Daniel Bourke (mrdbourke)</div></div>
+            <span class="resource-type">26hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Neural Networks (Visual Intuition)</div><div class="resource-channel">3Blue1Brown</div></div>
+            <span class="resource-type">Series</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Neural Networks from Scratch</div><div class="resource-channel">Andrej Karpathy</div></div>
+            <span class="resource-type">Playlist</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="phase p4">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">04</span>
+        <span class="phase-title">Transformers & LLMs</span>
+        <span class="phase-duration">6–8 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">Attention Mechanism</span>
+          <span class="topic-tag">Transformers Architecture</span>
+          <span class="topic-tag">HuggingFace</span>
+          <span class="topic-tag">Fine-Tuning (LoRA)</span>
+          <span class="topic-tag">BERT / GPT</span>
+          <span class="topic-tag">Embeddings</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/watch?v=bCz4OMemCcA" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Attention Is All You Need — Explained</div><div class="resource-channel">Yannic Kilcher</div></div>
+            <span class="resource-type">Deep Dive</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Build GPT from Scratch</div><div class="resource-channel">Andrej Karpathy</div></div>
+            <span class="resource-type">2hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=ySEx_Bqxvvo" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">HuggingFace Full Course</div><div class="resource-channel">freeCodeCamp</div></div>
+            <span class="resource-type">4hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/@AiAnytime" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Fine-Tuning & LLM Projects</div><div class="resource-channel">Ai Anytime</div></div>
+            <span class="resource-type">Channel</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div class="phase p5">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">05</span>
+        <span class="phase-title">Prompt Engineering & RAG</span>
+        <span class="phase-duration">3–4 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">Prompt Design</span>
+          <span class="topic-tag">Chain-of-Thought</span>
+          <span class="topic-tag">RAG (Retrieval Augmented Gen)</span>
+          <span class="topic-tag">Vector Databases</span>
+          <span class="topic-tag">Pinecone / ChromaDB</span>
+          <span class="topic-tag">LangChain</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/watch?v=ahnGLM-RC1Y" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">LangChain Full Course</div><div class="resource-channel">freeCodeCamp</div></div>
+            <span class="resource-type">5hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=T-D1OfcDW1M" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">RAG from Scratch (Complete)</div><div class="resource-channel">LangChain</div></div>
+            <span class="resource-type">Series</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/@krishnaik06" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Vector DBs & RAG Pipelines</div><div class="resource-channel">Krish Naik</div></div>
+            <span class="resource-type">Channel</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="phase p6">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">06</span>
+        <span class="phase-title">AI Agents & Agentic Systems</span>
+        <span class="phase-duration">4–6 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">AI Agents</span>
+          <span class="topic-tag">ReAct Pattern</span>
+          <span class="topic-tag">Tool Use / Function Calling</span>
+          <span class="topic-tag">LangGraph</span>
+          <span class="topic-tag">CrewAI</span>
+          <span class="topic-tag">AutoGen</span>
+          <span class="topic-tag">MCP</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/watch?v=F8NKVhkZZWI" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">LangGraph Full Course</div><div class="resource-channel">freeCodeCamp</div></div>
+            <span class="resource-type">6hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=IfRDCSrNMa0" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">CrewAI Tutorial</div><div class="resource-channel">Tech With Tim</div></div>
+            <span class="resource-type">1hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/@samwitteveenai" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">AI Agents Deep Dives</div><div class="resource-channel">Sam Witteveen</div></div>
+            <span class="resource-type">Channel</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 7 -->
+    <div class="phase p7">
+      <div class="phase-dot"></div>
+      <div class="phase-header" onclick="toggle(this)">
+        <span class="phase-number">07</span>
+        <span class="phase-title">MLOps & Production Deployment</span>
+        <span class="phase-duration">4–5 weeks</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="topics">
+          <span class="topic-tag">FastAPI</span>
+          <span class="topic-tag">Docker</span>
+          <span class="topic-tag">AWS/GCP/Azure</span>
+          <span class="topic-tag">MLflow</span>
+          <span class="topic-tag">CI/CD for ML</span>
+          <span class="topic-tag">Monitoring</span>
+          <span class="topic-tag">Streamlit / Gradio</span>
+        </div>
+        <p class="resources-label">YouTube Resources</p>
+        <ul class="resource-list">
+          <li><a href="https://www.youtube.com/watch?v=0sOvCWFmrtA" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">Docker Full Course</div><div class="resource-channel">TechWorld with Nana</div></div>
+            <span class="resource-type">4hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=h5wLuVDr0oc" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">FastAPI Full Course</div><div class="resource-channel">Sanjeev Thiyagarajan</div></div>
+            <span class="resource-type">10hr</span>
+          </a></li>
+          <li><a href="https://www.youtube.com/watch?v=1ovWBMODEaY" target="_blank">
+            <div class="yt-icon">▶</div>
+            <div class="resource-meta"><div class="resource-name">MLOps Full Course</div><div class="resource-channel">Krish Naik</div></div>
+            <span class="resource-type">Course</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="total-bar">
+    Total estimated timeline: <span>~7–10 months</span> of consistent study &amp; project building.<br><br>
+    🔥 Key tip: Build 2–3 real projects per phase. Employers hire for projects, not certificates.
+  </div>
+</div>
+
+<script>
+  function toggle(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    // close all
+    document.querySelectorAll('.phase-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.phase-header').forEach(h => h.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      header.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>
